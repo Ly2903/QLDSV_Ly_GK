@@ -18,6 +18,9 @@
             android:name=".main_giangvien"
             android:exported="true" />
         <activity
+            android:name=".nhapdiem_ct_ltc"
+            android:exported="false" />
+        <activity
             android:name=".nhapdiem"
             android:exported="true" >
             <intent-filter>
