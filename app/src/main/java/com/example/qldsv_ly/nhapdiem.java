@@ -68,8 +68,11 @@ public class nhapdiem extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Toast.makeText(nhapdiem.this, "Item: "+nhapdiem.arrLopTinChiNhapDiem.get(position).getMaLTC(), Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(nhapdiem.this, nhapdiem_ct_ltc.class);
+                startActivity(intent);
             }
         });
+
 
         cbNienKhoa.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
