@@ -83,6 +83,7 @@
                     android:textSize="20dp"
                     android:width="130dp"/>
                 <TextView
+                    android:id="@+id/maLTC"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="LTC1"
@@ -100,10 +101,11 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Học kỳ"
+                    android:text="Tên môn học:"
                     android:textSize="20dp"
                     android:width="130dp"/>
                 <TextView
+                    android:id="@+id/tenMH"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Công nghệ thông tin 1"
@@ -121,9 +123,9 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="MSSV/ Họ tên"
+                    android:text="MSSV"
                     android:textSize="20dp"
-                    android:width="150dp"
+                    android:width="140dp"
                     />
                 <TextView
                     android:layout_width="wrap_content"
@@ -155,7 +157,7 @@
                     />
             </LinearLayout>
             <ListView
-                android:id="@+id/listviewDSLTC"
+                android:id="@+id/lvDSSV_LTC"
                 android:drawSelectorOnTop="true"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

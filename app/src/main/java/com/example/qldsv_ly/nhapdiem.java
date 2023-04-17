@@ -46,6 +46,7 @@ public class nhapdiem extends AppCompatActivity {
     Context context;
     SearchView searchView = null;
     public static String MaGiangVien="GV1";
+    public static String maLTC_NhapDiem="",tenMH_NhapDiem="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +69,8 @@ public class nhapdiem extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Toast.makeText(nhapdiem.this, "Item: "+nhapdiem.arrLopTinChiNhapDiem.get(position).getMaLTC(), Toast.LENGTH_SHORT).show();
+                maLTC_NhapDiem = nhapdiem.arrLopTinChiNhapDiem.get(position).getMaLTC();
+                tenMH_NhapDiem=nhapdiem.arrLopTinChiNhapDiem.get(position).getTenMH();
                 Intent intent = new Intent(nhapdiem.this, nhapdiem_ct_ltc.class);
                 startActivity(intent);
             }
@@ -229,7 +232,7 @@ public class nhapdiem extends AppCompatActivity {
                 objectLopTinChiNhapDiem = new ObjectLopTinChiNhapDiem();
                 objectLopTinChiNhapDiem.setId(i);
                 objectLopTinChiNhapDiem.setMaLTC(rs.getString(1));
-                objectLopTinChiNhapDiem.setTenLTC(rs.getString(2));
+                objectLopTinChiNhapDiem.setTenMH(rs.getString(2));
 
 
                 arrLopTinChiNhapDiem.add(objectLopTinChiNhapDiem);
@@ -265,7 +268,7 @@ public class nhapdiem extends AppCompatActivity {
                     objectLopTinChiNhapDiem = new ObjectLopTinChiNhapDiem();
                     objectLopTinChiNhapDiem.setId(i);
                     objectLopTinChiNhapDiem.setMaLTC(rs.getString(1));
-                    objectLopTinChiNhapDiem.setTenLTC(rs.getString(2));
+                    objectLopTinChiNhapDiem.setTenMH(rs.getString(2));
 
                     arrLopTinChiNhapDiem.add(objectLopTinChiNhapDiem);
                 }

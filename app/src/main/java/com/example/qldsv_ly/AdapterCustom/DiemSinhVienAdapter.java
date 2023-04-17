@@ -7,52 +7,51 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.example.qldsv_ly.Objects.ObjectLopTinChiNhapDiem;
+import com.example.qldsv_ly.Objects.ObjectDiemSinhVien;
 import com.example.qldsv_ly.R;
 
 import java.util.ArrayList;
 
 
-public class LopTinChiNhapDiemAdapter extends BaseAdapter {
+public class DiemSinhVienAdapter extends BaseAdapter {
 
     private Context context;
     private int layout;
     private LayoutInflater layoutInflater;
-    ArrayList<ObjectLopTinChiNhapDiem> listLTC;
-    private ObjectLopTinChiNhapDiem objectLopTinChiNhapDiem;
+    ArrayList<ObjectDiemSinhVien> listDiemSV;
+    private ObjectDiemSinhVien objectDiemSinhVien;
 
-    public LopTinChiNhapDiemAdapter(Context context, ArrayList<ObjectLopTinChiNhapDiem> listLTC) {
+    public DiemSinhVienAdapter(Context context, ArrayList<ObjectDiemSinhVien> listDiemSV) {
         this.context = context;
-        this.listLTC = listLTC;
+        this.listDiemSV = listDiemSV;
         layoutInflater= (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
-    public LopTinChiNhapDiemAdapter(Context context, int layout, ArrayList<ObjectLopTinChiNhapDiem> listLTC) {
+    public DiemSinhVienAdapter(Context context, int layout, ArrayList<ObjectDiemSinhVien> listDiemSV) {
         this.context = context;
         this.layout=layout;
-        this.listLTC=listLTC;
+        this.listDiemSV=listDiemSV;
     }
 
     @Override
     public int getCount() {
-        return listLTC.size();
+        return listDiemSV.size();
     }
 
     @Override
     public Object getItem(int i) {
-        return listLTC.get(i);
+        return listDiemSV.get(i);
     }
 
 
     public long getItemId(int i) {
-        return listLTC.get(i).getId();
+        return listDiemSV.get(i).getId();
     }
 
 
     private class ViewHolder
     {
-        TextView maLTC;
-        TextView tenMH;
+        TextView maSV, diemCC, diemGK, diemCK, diemTK;
     }
 
     @Override
@@ -68,8 +67,11 @@ public class LopTinChiNhapDiemAdapter extends BaseAdapter {
 
 
             // Ánh xạ view
-            viewHolder.maLTC = (TextView) view.findViewById(R.id.maLTC);
-            viewHolder.tenMH = (TextView) view.findViewById(R.id.tenMH);
+            viewHolder.maSV = (TextView) view.findViewById(R.id.maSV);
+            viewHolder.diemCC = (TextView) view.findViewById(R.id.diemCC);
+            viewHolder.diemGK = (TextView) view.findViewById(R.id.diemGK);
+            viewHolder.diemCK = (TextView) view.findViewById(R.id.diemCK);
+            viewHolder.diemTK = (TextView) view.findViewById(R.id.diemTK);
             view.setTag(viewHolder);
         }
         else
@@ -78,9 +80,12 @@ public class LopTinChiNhapDiemAdapter extends BaseAdapter {
         }
 
         // Gán giá trị
-        objectLopTinChiNhapDiem =listLTC.get(i);
-        viewHolder.maLTC.setText(objectLopTinChiNhapDiem.getMaLTC());
-        viewHolder.tenMH.setText(objectLopTinChiNhapDiem.getTenMH());
+        objectDiemSinhVien =listDiemSV.get(i);
+        viewHolder.maSV.setText(objectDiemSinhVien.getMaSV());
+        viewHolder.diemCC.setText(objectDiemSinhVien.getDiemCC()+"");
+        viewHolder.diemGK.setText(objectDiemSinhVien.getDiemGK()+"");
+        viewHolder.diemCK.setText(objectDiemSinhVien.getDiemCK()+"");
+        viewHolder.diemTK.setText(objectDiemSinhVien.getDiemTK()+"");
 
         // Đổi màu items
         view.setBackgroundResource(R.drawable.textlines);

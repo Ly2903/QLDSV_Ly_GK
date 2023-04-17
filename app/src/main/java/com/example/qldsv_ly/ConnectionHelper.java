@@ -19,7 +19,7 @@ public class ConnectionHelper {
     public Connection connectionclass() {
         StrictMode.ThreadPolicy policy =new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
-        String ip = "10.0.2.2", port = "1433", db = "qldiem_PTCUDDD", username = "devostack", password = "123";
+        String ip = "10.0.2.2", port = "1433", db = "qldiem_PTCUDDD_1", username = "sa", password = "<Sang_123456>";
         StrictMode.ThreadPolicy a = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(a);
         String connectURL = null;

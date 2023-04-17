@@ -4,7 +4,7 @@ package com.example.qldsv_ly.Objects;
 public class ObjectLopTinChiNhapDiem {
     private int id;
     private String maLTC;
-    private String tenLTC;
+    private String tenMH;
 
 
 
@@ -12,10 +12,10 @@ public class ObjectLopTinChiNhapDiem {
     }
 
 
-    public ObjectLopTinChiNhapDiem(int id, String maLTC, String tenLTC) {
+    public ObjectLopTinChiNhapDiem(int id, String maLTC, String tenMH) {
         this.id = id;
         this.maLTC = maLTC;
-        this.tenLTC = tenLTC;
+        this.tenMH = tenMH;
     }
 
     public int getId() {
@@ -34,11 +34,11 @@ public class ObjectLopTinChiNhapDiem {
         this.maLTC = maLTC;
     }
 
-    public String getTenLTC() {
-        return tenLTC;
+    public String getTenMH() {
+        return tenMH;
     }
 
-    public void setTenLTC(String tenLTC) {
-        this.tenLTC = tenLTC;
+    public void setTenMH(String tenMH) {
+        this.tenMH = tenMH;
     }
 }
