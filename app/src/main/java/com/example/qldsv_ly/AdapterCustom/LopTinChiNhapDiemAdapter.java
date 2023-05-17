@@ -8,7 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.example.Objects.ObjectLopTinChiNhapDiem;
-import com.example.QLDSV.R;
+import com.example.qldsv_ly.R;
 
 import java.util.ArrayList;
 

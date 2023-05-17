@@ -1,4 +1,4 @@
-package com.example.QLDSV;
+package com.example.qldsv_ly;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,7 +9,6 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.Database.DatabaseManager;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -20,15 +19,15 @@ public class main_giangvien extends AppCompatActivity {
 
     Connection conn = null;
 
-    public static String maGV = "";
+    public static String maGV = "gv1";
     TextView txtTentk;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_giangvien);
 
-        Intent intent = getIntent();
-        maGV = intent.getStringExtra("maGiangVien");
+//        Intent intent = getIntent();
+//        maGV = intent.getStringExtra("maGiangVien");
 
         //      Ánh xạ
         setControl();
@@ -48,24 +47,24 @@ public class main_giangvien extends AppCompatActivity {
                 finish();
             }
         });
-        btnThongBao.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(main_giangvien.this, ThemThongBao.class);
-                intent.putExtra("maGiangVien", maGV);
-                intent.putExtra("vaiTro", "GV");
-                startActivity(intent);
-                finish();
-            }
-        });
-        btnDangXuat.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(main_giangvien.this, DangNhap.class);
-                startActivity(intent);
-                finish();
-            }
-        });
+//        btnThongBao.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent = new Intent(main_giangvien.this, ThemThongBao.class);
+//                intent.putExtra("maGiangVien", maGV);
+//                intent.putExtra("vaiTro", "GV");
+//                startActivity(intent);
+//                finish();
+//            }
+//        });
+//        btnDangXuat.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent = new Intent(main_giangvien.this, DangNhap.class);
+//                startActivity(intent);
+//                finish();
+//            }
+//        });
     }
 
     private void setControl() {

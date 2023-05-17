@@ -1,4 +1,4 @@
-package com.example.QLDSV;
+package com.example.qldsv_ly;
 
 import android.animation.ObjectAnimator;
 import android.app.SearchManager;
@@ -21,11 +21,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 
-import com.example.Database.ConnectionHelper;
 import com.example.Objects.ObjectLopTinChiNhapDiem;
-import com.example.Objects.TaiKhoan;
 import com.example.adapter.LopTinChiNhapDiemAdapter;
-import com.example.adapter.TaiKhoanAdapter;
 
 import java.sql.Connection;
 import java.sql.ResultSet;

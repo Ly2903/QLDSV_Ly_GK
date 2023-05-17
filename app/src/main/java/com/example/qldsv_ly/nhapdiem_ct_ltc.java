@@ -1,4 +1,4 @@
-package com.example.QLDSV;
+package com.example.qldsv_ly;
 
 import android.app.SearchManager;
 import android.content.Context;

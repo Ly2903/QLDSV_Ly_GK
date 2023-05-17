@@ -1,4 +1,4 @@
-package com.example.QLDSV;
+package com.example.qldsv_ly;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -15,7 +15,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.Database.DatabaseManager;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
