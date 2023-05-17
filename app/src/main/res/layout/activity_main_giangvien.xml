@@ -34,7 +34,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Xin chào"
+        android:id="@+id/tentk"
         android:textColor="@color/main"
         android:gravity="start"
         android:textSize="20dp"
@@ -44,16 +44,50 @@
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"/>
 
-    <Button
-        android:id="@+id/btnQLDiem"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_marginTop="320dp"
-        android:layout_weight="1"
-        android:backgroundTint="@color/white"
-        android:drawableTop="@drawable/ic_sinhvien"
-        android:padding="10dp"
-        android:text="Quản lí điểm"
-        android:textColor="@color/main" />
+        android:background="@drawable/borderradius">
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:padding="5dp">
+        <Button
+            android:id="@+id/btnQLDiem"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="1"
+            android:backgroundTint="@color/white"
+            android:drawableTop="@drawable/ic_sinhvien"
+            android:padding="10dp"
+            android:text="Quản lí điểm"
+            android:textColor="@color/main" />
+        <Button
+            android:id="@+id/btnThongBao"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="1"
+            android:backgroundTint="@color/white"
+            android:drawableTop="@drawable/baseline_notifications_24_primary"
+            android:padding="10dp"
+            android:text="Thông báo"
+            android:textColor="@color/primary"
+            />
+        <Button
+            android:id="@+id/btnDangXuat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="1"
+            android:backgroundTint="@color/white"
+            android:drawableTop="@drawable/baseline_logout_24_primary"
+            android:padding="10dp"
+            android:text="Đăng xuất"
+            android:textColor="@color/main" />
+    </TableRow>
+    </TableLayout>
 </RelativeLayout>

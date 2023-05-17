@@ -1,36 +1,37 @@
 package com.example.qldsv_ly;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.StrictMode;
 import android.util.Log;
-import android.view.View;
-
-import androidx.appcompat.app.AlertDialog;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 
-public class ConnectionHelper {
-    public static Connection con = null;
+public class connectionHelper {
+    Connection con;
+    String username, password, ip, port, db;
     @SuppressLint("NewApi")
-    public Connection connectionclass() {
-        StrictMode.ThreadPolicy policy =new StrictMode.ThreadPolicy.Builder().permitAll().build();
+    public Connection connectionClass() {
+        //ip = "192.168.118.35";
+        ip = "10.0.2.2";
+        db = "qldiem_PTCUDDD";
+        username = "SA";
+        password = "123";
+        port = "1433";
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
-        String ip = "10.0.2.2", port = "1433", db = "qldiem_PTCUDDD", username = "sa", password = "123";
-        StrictMode.ThreadPolicy a = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(a);
+        Connection conn = null;
         String connectURL = null;
-
         try {
             Class.forName("net.sourceforge.jtds.jdbc.Driver");
             connectURL = "jdbc:jtds:sqlserver://" + ip + ":" + port + ";databasename=" + db + ";user=" + username + ";"+"password=" + password + ";";
-            con = DriverManager.getConnection(connectURL);
-        } catch (Exception e) {
-            Log.e("Error :", e.getMessage());
+            conn = DriverManager.getConnection(connectURL);
+            Log.i("Database", "Success");
         }
-        return con;
+        catch(Exception e) {
+            Log.e("ERROR1", e.getMessage());
+        }
+        return conn;
     }
+
 }

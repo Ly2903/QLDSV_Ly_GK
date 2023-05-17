@@ -16,22 +16,26 @@
 
         <activity
             android:name=".main_giangvien"
-            android:exported="true" />
-        <activity
-            android:name=".nhapdiem_ct_ltc"
-            android:exported="false" />
-        <activity
-            android:name=".nhapdiem"
             android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
+            android:name=".nhapdiem_ct_ltc"
+            android:exported="false" />
+        <activity
+            android:name=".cap_nhat_diem"
+            android:exported="false" />
+        <activity
+            android:name=".nhapdiem"
+            android:exported="false"/>
+
+        <activity
             android:name=".MainActivity"
-            android:exported="true">
+            android:exported="true"
+            >
 
         </activity>
     </application>

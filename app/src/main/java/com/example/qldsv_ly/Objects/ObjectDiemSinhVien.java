@@ -1,24 +1,24 @@
-package com.example.qldsv_ly.Objects;
+package com.example.Objects;
 
 public class ObjectDiemSinhVien {
     private int id;
-
     private String MaLTC, MaSV;
 
-    private Float DiemCC, DiemGK, DiemCK;
+    private Float DiemCC, DiemGK, DiemCK, DiemTK;
 
     private boolean Huy;
 
     public ObjectDiemSinhVien() {
     }
 
-    public ObjectDiemSinhVien(int id, String maLTC, String maSV, Float diemCC, Float diemGK, Float diemCK, boolean huy) {
+    public ObjectDiemSinhVien(int id, String maLTC, String maSV, Float diemCC, Float diemGK, Float diemCK, Float diemTK, boolean huy) {
         this.id = id;
         MaLTC = maLTC;
         MaSV = maSV;
         DiemCC = diemCC;
         DiemGK = diemGK;
         DiemCK = diemCK;
+        DiemTK = diemTK;
         Huy = huy;
     }
 
@@ -68,6 +68,14 @@ public class ObjectDiemSinhVien {
 
     public void setDiemCK(Float diemCK) {
         DiemCK = diemCK;
+    }
+
+    public Float getDiemTK() {
+        return DiemTK;
+    }
+
+    public void setDiemTK(Float diemTK) {
+        DiemTK = diemTK;
     }
 
     public boolean isHuy() {

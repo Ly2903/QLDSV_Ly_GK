@@ -15,15 +15,18 @@
         android:paddingVertical="8dp"
         android:layout_marginTop="8dp"
         >
+
         <TextView
+            android:id="@+id/maSV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="N19DCCN104"
-            android:textSize="20dp"
+            android:width="130dp"
+            android:text="SV1"
             android:textColor="@color/black"
-            android:textStyle="bold"
-            android:width="150dp"/>
+            android:textSize="20dp"
+            android:textStyle="bold" />
         <TextView
+            android:id="@+id/diemCC"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="8.5"
@@ -31,6 +34,7 @@
             android:layout_marginRight="20dp"
             />
         <TextView
+            android:id="@+id/diemGK"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="8.5"
@@ -38,6 +42,7 @@
             android:layout_marginRight="20dp"
             />
         <TextView
+            android:id="@+id/diemCK"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="8.5"
@@ -45,6 +50,7 @@
             android:layout_marginRight="20dp"
             />
         <TextView
+            android:id="@+id/diemTK"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="8.5"

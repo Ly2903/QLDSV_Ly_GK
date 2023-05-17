@@ -1,4 +1,4 @@
-package com.example.qldsv_ly.AdapterCustom;
+package com.example.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,8 +7,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.example.qldsv_ly.Objects.ObjectLopTinChiNhapDiem;
-import com.example.qldsv_ly.R;
+import com.example.Objects.ObjectLopTinChiNhapDiem;
+import com.example.QLDSV.R;
 
 import java.util.ArrayList;
 
@@ -21,7 +21,7 @@ public class LopTinChiNhapDiemAdapter extends BaseAdapter {
     ArrayList<ObjectLopTinChiNhapDiem> listLTC;
     private ObjectLopTinChiNhapDiem objectLopTinChiNhapDiem;
 
-    public LopTinChiNhapDiemAdapter(Context context, ArrayList<ObjectLopTinChiNhapDiem> listLTCDDK) {
+    public LopTinChiNhapDiemAdapter(Context context, ArrayList<ObjectLopTinChiNhapDiem> listLTC) {
         this.context = context;
         this.listLTC = listLTC;
         layoutInflater= (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -52,7 +52,7 @@ public class LopTinChiNhapDiemAdapter extends BaseAdapter {
     private class ViewHolder
     {
         TextView maLTC;
-        TextView tenLTC;
+        TextView tenMH;
     }
 
     @Override
@@ -69,7 +69,7 @@ public class LopTinChiNhapDiemAdapter extends BaseAdapter {
 
             // Ánh xạ view
             viewHolder.maLTC = (TextView) view.findViewById(R.id.maLTC);
-            viewHolder.tenLTC = (TextView) view.findViewById(R.id.tenLTC);
+            viewHolder.tenMH = (TextView) view.findViewById(R.id.tenMH);
             view.setTag(viewHolder);
         }
         else
@@ -80,7 +80,7 @@ public class LopTinChiNhapDiemAdapter extends BaseAdapter {
         // Gán giá trị
         objectLopTinChiNhapDiem =listLTC.get(i);
         viewHolder.maLTC.setText(objectLopTinChiNhapDiem.getMaLTC());
-        viewHolder.tenLTC.setText(objectLopTinChiNhapDiem.getTenLTC());
+        viewHolder.tenMH.setText(objectLopTinChiNhapDiem.getTenMH());
 
         // Đổi màu items
         view.setBackgroundResource(R.drawable.textlines);

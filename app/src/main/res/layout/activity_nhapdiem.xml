@@ -12,45 +12,44 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/main">
+            <Button
+                android:id="@+id/btnClickback"
+                android:layout_width="60dp"
+                android:layout_height="match_parent"
+                android:backgroundTint="@color/main"
+                android:drawableLeft="@drawable/ic_back" />
+            <androidx.appcompat.widget.SearchView
+                android:id="@+id/searchTaiKhoan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:queryHint="Tìm kiếm sinh viên"
+                app:iconifiedByDefault="false"
+                android:background="@drawable/search"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginRight="5dp"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
-
-<!--            <LinearLayout-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="70sp"-->
-<!--                android:textColor="@color/primary"-->
-<!--                android:padding="16sp"-->
-<!--                android:background="@color/primary"-->
-
-<!--                >-->
-<!--                <ImageView-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:src="@drawable/baseline_arrow_back_ios_24"-->
-<!--                    android:layout_marginRight="20sp"-->
-<!--                    />-->
-<!--                <SearchView-->
-<!--                    android:id="@+id/btnSearch"-->
-<!--                    android:layout_width="310sp"-->
-<!--                    android:layout_height="38sp"-->
-<!--                    android:background="@drawable/mybutton"-->
-<!--                    android:textColor="@color/black"-->
-<!--                    >-->
-<!--                    <ImageView-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:src="@drawable/baseline_search_24"-->
-<!--                        />-->
-<!--                </SearchView>-->
-<!--            </LinearLayout>-->
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="20dp"
+                android:orientation="vertical"
+                android:background="@color/background2nd"
+                android:paddingBottom="20dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
                 >
                 <ImageView
                     android:layout_width="wrap_content"
@@ -67,7 +66,7 @@
                         android:text="Nhập điểm"
                         android:textColor="@color/primary"
                         android:textStyle="bold"
-                        android:textSize="24dp"
+                        android:textSize="26dp"
                         />
                     <TextView
                         android:layout_width="match_parent"
@@ -75,7 +74,7 @@
                         android:text="Danh sách lớp tín chỉ"
                         android:textColor="@color/primary"
                         android:textStyle="bold"
-                        android:textSize="24dp"/>
+                        android:textSize="26dp"/>
                 </LinearLayout>
             </LinearLayout>
             <LinearLayout
@@ -88,7 +87,9 @@
                     android:layout_height="wrap_content"
                     android:text="Niên khóa"
                     android:textSize="20dp"
-                    android:width="200dp"/>
+                    android:width="200dp"
+                    android:textColor="@color/primary"
+                    android:textStyle="bold"/>
                 <Spinner
                     android:id="@+id/nien_khoa_spinner"
                     android:layout_width="match_parent"
@@ -105,17 +106,20 @@
                     android:layout_height="wrap_content"
                     android:text="Học kỳ"
                     android:textSize="20dp"
-                    android:width="200dp"/>
+                    android:width="200dp"
+                    android:textColor="@color/primary"
+                    android:textStyle="bold"/>
                 <Spinner
                     android:id="@+id/hoc_ky_spinner"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
             </LinearLayout>
+            </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingHorizontal="20dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginLeft="8dp"
                 >
                 <TextView
@@ -123,13 +127,17 @@
                     android:layout_height="match_parent"
                     android:text="Mã lớp"
                     android:textSize="20dp"
-                    android:width="100dp"/>
+                    android:width="100dp"
+                    android:textColor="@color/primary"
+                    android:textStyle="bold"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:text="Tên môn học"
                     android:textSize="20dp"
-                    android:width="200dp"/>
+                    android:width="200dp"
+                    android:textColor="@color/primary"
+                    android:textStyle="bold"/>
             </LinearLayout>
 
             <ListView

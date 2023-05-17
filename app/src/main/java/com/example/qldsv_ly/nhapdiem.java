@@ -1,4 +1,4 @@
-package com.example.qldsv_ly;
+package com.example.QLDSV;
 
 import android.animation.ObjectAnimator;
 import android.app.SearchManager;
@@ -21,8 +21,11 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 
-import com.example.qldsv_ly.AdapterCustom.LopTinChiNhapDiemAdapter;
-import com.example.qldsv_ly.Objects.ObjectLopTinChiNhapDiem;
+import com.example.Database.ConnectionHelper;
+import com.example.Objects.ObjectLopTinChiNhapDiem;
+import com.example.Objects.TaiKhoan;
+import com.example.adapter.LopTinChiNhapDiemAdapter;
+import com.example.adapter.TaiKhoanAdapter;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -38,21 +41,30 @@ public class nhapdiem extends AppCompatActivity {
     ArrayList<String> arrHocKy = new ArrayList<String>();
 
     ListView listviewLTC;
+
+    Button btnClickback;
+    SearchView searchLTC;
     public static ArrayList<ObjectLopTinChiNhapDiem> arrLopTinChiNhapDiem;
     ObjectLopTinChiNhapDiem objectLopTinChiNhapDiem;
     LopTinChiNhapDiemAdapter lopTinChiNhapDiemAdapter;
     int vitri=-1, vitriNienKhoa=0, vitriHocKy=0;
 
     Context context;
-    SearchView searchView = null;
-    public static String MaGiangVien="GV1";
+
+    public String MaGiangVien="";
+    public static String maLTC_NhapDiem="",tenMH_NhapDiem="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nhapdiem);
+
+        Intent intent = getIntent();
+        MaGiangVien = intent.getStringExtra("maGiangVien");
+
         setControl();
         setEvent();
+        searchTaiKhoan();
 
         ArrayAdapter arrayAdapterNienKhoa = new ArrayAdapter(this,android.R.layout.simple_spinner_item,arrNienKhoa);
         cbNienKhoa.setAdapter(arrayAdapterNienKhoa);
@@ -68,7 +80,10 @@ public class nhapdiem extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Toast.makeText(nhapdiem.this, "Item: "+nhapdiem.arrLopTinChiNhapDiem.get(position).getMaLTC(), Toast.LENGTH_SHORT).show();
+                maLTC_NhapDiem = nhapdiem.arrLopTinChiNhapDiem.get(position).getMaLTC();
+                tenMH_NhapDiem=nhapdiem.arrLopTinChiNhapDiem.get(position).getTenMH();
                 Intent intent = new Intent(nhapdiem.this, nhapdiem_ct_ltc.class);
+                intent.putExtra("maGiangVien", MaGiangVien);
                 startActivity(intent);
             }
         });
@@ -96,8 +111,6 @@ public class nhapdiem extends AppCompatActivity {
                 vitriHocKy=i;
                 getDSLTC();
                 lopTinChiNhapDiemAdapter.notifyDataSetChanged();
-//                searchView.setQuery("", false);
-//                searchView.clearFocus();
             }
 
             @Override
@@ -105,42 +118,44 @@ public class nhapdiem extends AppCompatActivity {
 
             }
         });
+
+        btnClickback.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(nhapdiem.this, main_giangvien.class);
+                intent.putExtra("maGiangVien", MaGiangVien);
+                startActivity(intent);
+            }
+
+        });
         }
     private void setControl(){
         cbNienKhoa=(Spinner) findViewById(R.id.nien_khoa_spinner);
         cbHocKy=(Spinner) findViewById(R.id.hoc_ky_spinner);
         listviewLTC = (ListView) findViewById(R.id.listviewDSLTC);
         arrLopTinChiNhapDiem = new ArrayList<>();
+        btnClickback = findViewById(R.id.btnClickback);
+        searchLTC = findViewById(R.id.searchTaiKhoan);
     }
     private void setEvent(){
         KhoiTaoNienKhoa();
         KhoiTaoHocKi();
 
         getDSLTC();
+
+
     }
 
-    //Menu
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_dangky, menu);
+    public void searchTaiKhoan() {
+        searchLTC.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
 
-        //Nút Tìm kiếm
-        MenuItem searchItem = menu.findItem(R.id.menuTimkiem);
-        SearchManager searchManager = (SearchManager) nhapdiem.this.getSystemService(Context.SEARCH_SERVICE);
-        if (searchItem != null) {
-            searchView = (SearchView) searchItem.getActionView();
-        }
-        if (searchView != null) {
-            searchView.setSearchableInfo(searchManager.getSearchableInfo(nhapdiem.this.getComponentName()));
-        }
-
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            //Bắt kí tự
             @Override
             public boolean onQueryTextChange(String newText) {
-                //Toast.makeText(LopTinChiDaDangKy.this, searchView.getQuery(), Toast.LENGTH_SHORT).show();
-
-                if (searchView.getQuery().toString().isEmpty())
+                if (newText.isEmpty())
                 {
                     getDSLTC();
                     lopTinChiNhapDiemAdapter.notifyDataSetChanged();
@@ -149,26 +164,18 @@ public class nhapdiem extends AppCompatActivity {
                 {
                     cbHocKy.setSelection(0);
                     cbNienKhoa.setSelection(0);
-                    timKiemLTCNhapDiem(searchView.getQuery().toString());
+                    timKiemLTCNhapDiem(newText);
                     lopTinChiNhapDiemAdapter.notifyDataSetChanged();
                 }
                 return false;
             }
-            //Bắt kí tự sau khi enter (không enter được khi null)
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
         });
-
-        return super.onCreateOptionsMenu(menu);
     }
-
     private void KhoiTaoNienKhoa(){
         try
         {
-            ConnectionHelper connectionHelper = new ConnectionHelper();
-            connect = connectionHelper.connectionclass();
+            connectionHelper connectionHelper = new connectionHelper();
+            connect = connectionHelper.connectionClass();
             if (connect != null) {
                 String query = "select distinct namhoc, cast(substring(NamHoc,0,5) as int)\n" +
                         "from LopTinChi\n" +
@@ -201,8 +208,8 @@ public class nhapdiem extends AppCompatActivity {
 
     private void getDSLTC() {
     try {
-        ConnectionHelper connectionHelper = new ConnectionHelper();
-        connect = connectionHelper.connectionclass();
+        connectionHelper connectionHelper = new connectionHelper();
+        connect = connectionHelper.connectionClass();
 
         if(connect !=null){
             String query = "select ltc.MaLTC, mh.TenMH from LopTinChi ltc\n" +
@@ -229,9 +236,7 @@ public class nhapdiem extends AppCompatActivity {
                 objectLopTinChiNhapDiem = new ObjectLopTinChiNhapDiem();
                 objectLopTinChiNhapDiem.setId(i);
                 objectLopTinChiNhapDiem.setMaLTC(rs.getString(1));
-                objectLopTinChiNhapDiem.setTenLTC(rs.getString(2));
-
-
+                objectLopTinChiNhapDiem.setTenMH(rs.getString(2));
                 arrLopTinChiNhapDiem.add(objectLopTinChiNhapDiem);
             }
             connect.close();
@@ -247,8 +252,8 @@ public class nhapdiem extends AppCompatActivity {
 
     public void timKiemLTCNhapDiem(String kitu){
         try {
-            ConnectionHelper connectionHelper = new ConnectionHelper();
-            connect = connectionHelper.connectionclass();
+            connectionHelper connectionHelper = new connectionHelper();
+            connect = connectionHelper.connectionClass();
             String query = "select ltc.MaLTC, mh.TenMH from LopTinChi ltc\n" +
                     "join MonHoc MH on ltc.MaMH = MH.MaMH\n" +
                     "join day on ltc.MaLTC = day.MaLTC\n" +
@@ -265,7 +270,7 @@ public class nhapdiem extends AppCompatActivity {
                     objectLopTinChiNhapDiem = new ObjectLopTinChiNhapDiem();
                     objectLopTinChiNhapDiem.setId(i);
                     objectLopTinChiNhapDiem.setMaLTC(rs.getString(1));
-                    objectLopTinChiNhapDiem.setTenLTC(rs.getString(2));
+                    objectLopTinChiNhapDiem.setTenMH(rs.getString(2));
 
                     arrLopTinChiNhapDiem.add(objectLopTinChiNhapDiem);
                 }
