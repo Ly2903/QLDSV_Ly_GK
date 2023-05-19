@@ -16,10 +16,19 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 
+import com.example.qldsv_ly.AdapterCustom.DiemAdapter;
+import com.example.qldsv_ly.Objects.ObjectDiem;
+import com.example.qldsv_ly.api.ApiManager;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class cap_nhat_diem extends AppCompatActivity {
 
@@ -27,12 +36,6 @@ public class cap_nhat_diem extends AppCompatActivity {
     EditText diemCC, diemGK, diemCK;
 
     Button btnUpdate;
-
-    Connection connect;
-    String connectionResult="";
-
-    Context context;
-
 
 
     @Override
@@ -55,25 +58,22 @@ public class cap_nhat_diem extends AppCompatActivity {
                     diemCC_Update = Float.parseFloat(diemCC.getText().toString());
                     diemGK_Update = Float.parseFloat(diemGK.getText().toString());
                     diemCK_Update = Float.parseFloat(diemCK.getText().toString());
-                    try {
-                        connectionHelper connectionHelper = new connectionHelper();
-                        connect = connectionHelper.connectionClass();
-                        if (connect != null) {
-                            String query = "UPDATE DangKi\n" +
-                                    "SET DIEMCC = " + diemCC_Update + " , DiemGK = " + diemGK_Update + " , DiemCK =" + diemCK_Update + "\n" +
-                                    "WHERE MaLTC='" + nhapdiem_ct_ltc.maLTC_ct_ltc + "' AND MaSV='" + nhapdiem_ct_ltc.maSV_ct_ltc + "'";
-                            Statement st = connect.createStatement();
-                            st.executeUpdate(query);
 
-                            connect.close();
-                            alertSuccess("Cập nhật điểm cho sinh viên: " + nhapdiem_ct_ltc.maSV_ct_ltc + " thành công! ");
-
-                        } else {
-                            connectionResult = "Check Connection";
+                    ApiManager apiManager = ApiManager.getInstance();
+                    Call<Object> call = apiManager.getApiService().capNhatDiem(nhapdiem_ct_ltc.maLTC_ct_ltc,nhapdiem_ct_ltc.maSV_ct_ltc, diemCC_Update, diemGK_Update, diemCK_Update);
+                    call.enqueue(new Callback<Object>() {
+                        @Override
+                        public void onResponse(Call<Object> call, Response<Object> response) {
+                            if(response.body()!= null && response.isSuccessful()){
+                                alertSuccess("Cập nhật điểm cho sinh viên: " + nhapdiem_ct_ltc.maSV_ct_ltc + " thành công! ");
+                            }
                         }
-                    } catch (Exception e) {
-                        Log.e("", e.getMessage());
-                    }
+
+                        @Override
+                        public void onFailure(Call<Object> call, Throwable t) {
+                            Toast.makeText(cap_nhat_diem.this, "call api CapNhatDiem fail", Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
             }
         });
@@ -106,33 +106,25 @@ public class cap_nhat_diem extends AppCompatActivity {
     }
 
     private void getDiemSV() {
-        try {
-            connectionHelper connectionHelper = new connectionHelper();
-            connect = connectionHelper.connectionClass();
-            if(connect !=null){
-                String query =
-                        "SELECT SV.HoTen, DK.DIEMCC,DK.DiemGK,DK.DiemCK\n" +
-                                "FROM SINHVIEN SV, DangKi DK\n" +
-                                "WHERE DK.MaLTC='"+nhapdiem_ct_ltc.maLTC_ct_ltc+"' AND DK.MaSV='"+nhapdiem_ct_ltc.maSV_ct_ltc+"' AND SV.MaSV = DK.MaSV";
-                Statement st = connect.createStatement();
-                ResultSet rs = st.executeQuery(query);
-                int i=0;
-                while(rs.next())
-                {
-                    tenSV.setText(rs.getString(1));
-                    diemCC.setText(Float.toString(rs.getFloat(2)));
-                    diemGK.setText(Float.toString(rs.getFloat(3)));
-                    diemCK.setText(Float.toString(rs.getFloat(4)));
+        ApiManager apiManager = ApiManager.getInstance();
+        Call<ObjectDiem> call = apiManager.getApiService().getSVTheoMaSVAndMaLTC(nhapdiem_ct_ltc.maLTC_ct_ltc,nhapdiem_ct_ltc.maSV_ct_ltc);
+        call.enqueue(new Callback<ObjectDiem>() {
+            @Override
+            public void onResponse(Call<ObjectDiem> call, Response<ObjectDiem> response) {
+                if(response.body()!= null && response.isSuccessful()){
+                    //objDiem = response.body();
+                    System.out.println("DIEM"+ response.body().getDiemCC() +" "+ response.body().getDiemCK()) ;
+                    diemCC.setText(String.valueOf(response.body().getDiemCC()));
+                    diemGK.setText(String.valueOf(response.body().getDiemGK()));
+                    diemCK.setText(String.valueOf(response.body().getDiemCK()));
                 }
-                connect.close();
             }
-            else{
-                connectionResult="Check Connection";
+
+            @Override
+            public void onFailure(Call<ObjectDiem> call, Throwable t) {
+                Toast.makeText(cap_nhat_diem.this, "call api CapNhatDiem fail", Toast.LENGTH_SHORT).show();
             }
-        }
-        catch (Exception e){
-            Log.e("",e.getMessage());
-        }
+        });
     }
 
     public void alertSuccess(String content) {

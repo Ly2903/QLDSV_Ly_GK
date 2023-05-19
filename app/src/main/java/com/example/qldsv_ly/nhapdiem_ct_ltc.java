@@ -1,39 +1,41 @@
 package com.example.qldsv_ly;
 
-import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.ListView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.Objects.ObjectDiemSinhVien;
-import com.example.adapter.DiemSinhVienAdapter;
+import com.example.qldsv_ly.AdapterCustom.DiemAdapter;
+import com.example.qldsv_ly.AdapterCustom.LopTinChiNhapDiemAdapter;
+import com.example.qldsv_ly.Objects.ObjectDiem;
+import com.example.qldsv_ly.Objects.ObjectLopTinChiNhapDiem;
+import com.example.qldsv_ly.api.ApiManager;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class nhapdiem_ct_ltc extends AppCompatActivity {
     SearchView searchSV;
     Connection connect;
-    String connectionResult="";
-    ListView lvDSSV_LTC;
-    public static ArrayList<ObjectDiemSinhVien> arrDiemSV;
-    ObjectDiemSinhVien objectDiemSinhVien;
-    DiemSinhVienAdapter diemSinhVienAdapter;
+
+
+    RecyclerView rcvDSSV_LTC;
+   List<ObjectDiem> arrDiemSV = new ArrayList<>();
+
     Context context;
     TextView maLTC, tenMH;
 
@@ -55,19 +57,7 @@ public class nhapdiem_ct_ltc extends AppCompatActivity {
         setEvent();
         searchTaiKhoan();
 
-        diemSinhVienAdapter = new DiemSinhVienAdapter(this,R.layout.item_ctltc_nhapdiem,arrDiemSV);
-        lvDSSV_LTC.setAdapter(diemSinhVienAdapter);
-        lvDSSV_LTC.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(nhapdiem_ct_ltc.this, "Item: "+nhapdiem_ct_ltc.arrDiemSV.get(position).getMaSV(), Toast.LENGTH_SHORT).show();
-                maLTC_ct_ltc = nhapdiem.maLTC_NhapDiem;
-                tenMH_ct_ltc = nhapdiem.tenMH_NhapDiem;
-                maSV_ct_ltc = nhapdiem_ct_ltc.arrDiemSV.get(position).getMaSV();
-                Intent intent = new Intent(nhapdiem_ct_ltc.this, cap_nhat_diem.class);
-                startActivity(intent);
-            }
-        });
+
         btnClickback.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -80,96 +70,62 @@ public class nhapdiem_ct_ltc extends AppCompatActivity {
     }
 
 
-        private void getDSSV() {
-        try {
-            connectionHelper connectionHelper = new connectionHelper();
-            connect = connectionHelper.connectionClass();
+        private void getDSSV(String ma) {
+            arrDiemSV.clear();
+            ApiManager apiManager = ApiManager.getInstance();
+            Call<List<ObjectDiem>> call = apiManager.getApiService().getDSSVTheoMaLTC(ma);
+            call.enqueue(new Callback<List<ObjectDiem>>() {
+                @Override
+                public void onResponse(Call<List<ObjectDiem>> call, Response<List<ObjectDiem>> response) {
+                    if(response.body()!= null && response.isSuccessful()){
+                        arrDiemSV = response.body();
+                        DiemAdapter diemAdapter = new DiemAdapter(arrDiemSV, new DiemAdapter.ItemClickListener() {
+                            @Override
+                            public void OnItemClick(View view, ObjectDiem diem, int i) {
+                                view.setBackground(getDrawable(R.color.background2nd));
+                                Toast.makeText(nhapdiem_ct_ltc.this, "Item: "+arrDiemSV.get(i).getMaSV(), Toast.LENGTH_SHORT).show();
+                                maLTC_ct_ltc = nhapdiem.maLTC_NhapDiem;
+                                tenMH_ct_ltc = nhapdiem.tenMH_NhapDiem;
+                                maSV_ct_ltc =arrDiemSV.get(i).getMaSV();
+                                Intent intent = new Intent(nhapdiem_ct_ltc.this, cap_nhat_diem.class);
+                                startActivity(intent);
 
-            if(connect !=null){
-                String query =
-                        "SELECT SV.MaSV, DK.DIEMCC,DK.DiemGK,DK.DiemCK,(MH.HeSoCC*DK.DiemCC + MH.HeSoGK*DK.DiemGK + MH.HeSocK*DK.DiemGK)/100 AS DIEMTK  \n" +
-                        "FROM LOPTINCHI LTC, SINHVIEN SV,MONHOC MH, DangKi DK\n" +
-                        "WHERE DK.MaLTC='"+nhapdiem.maLTC_NhapDiem+"' AND DK.MaSV=SV.MaSV AND LTC.MaMH=MH.MaMH and DK.MALTC = LTC.MALTC";
-                arrDiemSV.clear();
-                Statement st = connect.createStatement();
-                ResultSet rs = st.executeQuery(query);
-                int i=0;
-                while(rs.next())
-                {
+                            }
+                        });
+                        rcvDSSV_LTC.setAdapter(diemAdapter);
 
-                    objectDiemSinhVien = new ObjectDiemSinhVien();
-                    objectDiemSinhVien.setId(i);
-                    objectDiemSinhVien.setMaSV(rs.getString(1));
-                    objectDiemSinhVien.setDiemCC(rs.getFloat(2));
-                    objectDiemSinhVien.setDiemGK(rs.getFloat(3));
-                    objectDiemSinhVien.setDiemCK(rs.getFloat(4));
-                    objectDiemSinhVien.setDiemTK(rs.getFloat(5));
-
-                    arrDiemSV.add(objectDiemSinhVien);
+                    }
                 }
-                Toast.makeText(context, nhapdiem.maLTC_NhapDiem+"", Toast.LENGTH_SHORT).show();
 
-                connect.close();
-            }
-            else{
-                connectionResult="Check Connection";
-            }
-        }
-        catch (Exception e){
-            Log.e("",e.getMessage());
-        }
+                @Override
+                public void onFailure(Call<List<ObjectDiem>> call, Throwable t) {
+                    Toast.makeText(nhapdiem_ct_ltc.this, "call api fail", Toast.LENGTH_SHORT).show();
+                }
+            });
     }
 
     private void setControl(){
-        lvDSSV_LTC = (ListView) findViewById(R.id.lvDSSV_LTC);
+        rcvDSSV_LTC = (RecyclerView) findViewById(R.id.rcvDSSV_LTC);
+        rcvDSSV_LTC.setHasFixedSize(true);
+
+        LinearLayoutManager linearLayoutManager =  new LinearLayoutManager(this);
+        rcvDSSV_LTC.setLayoutManager(linearLayoutManager);
+
+        DividerItemDecoration itemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
+        rcvDSSV_LTC.addItemDecoration(itemDecoration);
         maLTC=findViewById(R.id.maLTC);
         tenMH=findViewById(R.id.tenMH);
         searchSV = findViewById(R.id.searchTaiKhoan);
         btnClickback = findViewById(R.id.btnClickback);
-        arrDiemSV = new ArrayList<>();
 
     }
     private void setEvent(){
         maLTC.setText(nhapdiem.maLTC_NhapDiem);
         tenMH.setText(nhapdiem.tenMH_NhapDiem);
-        getDSSV();
+        getDSSV(nhapdiem.maLTC_NhapDiem);
     }
     public void timKiemMaSV(String kitu){
-        try {
-            connectionHelper connectionHelper = new connectionHelper();
-            connect = connectionHelper.connectionClass();
-            String query =
-                    "SELECT SV.MaSV, DK.DIEMCC,DK.DiemGK,DK.DiemCK,(MH.HeSoCC*DK.DiemCC + MH.HeSoGK*DK.DiemGK + MH.HeSocK*DK.DiemGK)/100 AS DIEMTK  \n" +
-                            "FROM LOPTINCHI LTC, SINHVIEN SV,MONHOC MH, DangKi DK\n" +
-                            "WHERE DK.MaLTC='"+nhapdiem.maLTC_NhapDiem+"' AND DK.MaSV=SV.MaSV AND LTC.MaMH=MH.MaMH and DK.MALTC = LTC.MALTC";
 
-            if (connect != null) {
-                query = query + " and (SV.MaSV like N'%"+kitu+"%')";
-                arrDiemSV.clear();
-                Statement st = connect.createStatement();
-                ResultSet rs = st.executeQuery(query);
-                int i=0;
-                while(rs.next())
-                {
-                    objectDiemSinhVien = new ObjectDiemSinhVien();
-                    objectDiemSinhVien.setId(i);
-                    objectDiemSinhVien.setMaSV(rs.getString(1));
-                    objectDiemSinhVien.setDiemCC(rs.getFloat(2));
-                    objectDiemSinhVien.setDiemGK(rs.getFloat(3));
-                    objectDiemSinhVien.setDiemCK(rs.getFloat(4));
-                    objectDiemSinhVien.setDiemTK(rs.getFloat(5));
-
-                    arrDiemSV.add(objectDiemSinhVien);
-                }
-                connect.close();
-            }
-            else{
-                connectionResult="Check Connection";
-            }
-        }
-        catch (Exception e){
-            Log.e("",e.getMessage());
-        }
     }
 
     public void searchTaiKhoan() {
@@ -183,16 +139,35 @@ public class nhapdiem_ct_ltc extends AppCompatActivity {
             public boolean onQueryTextChange(String newText) {
                 if (newText.isEmpty())
                 {
-                    getDSSV();
-                    diemSinhVienAdapter.notifyDataSetChanged();
+                    getDSSV(nhapdiem.maLTC_NhapDiem);
+
                 }
-                else
-                {
-                    timKiemMaSV(newText);
-                    diemSinhVienAdapter.notifyDataSetChanged();
+                else {
+                    List<ObjectDiem> listSearchDiem = new ArrayList<>();
+                    for (int i = 0; i < arrDiemSV.size(); i++) {
+                        if (arrDiemSV.get(i).getMaSV().toLowerCase().contains(newText.toLowerCase())) {
+                            listSearchDiem.add(arrDiemSV.get(i));
+
+                        }
+                        DiemAdapter diemAdapter = new DiemAdapter(listSearchDiem, new DiemAdapter.ItemClickListener() {
+                            @Override
+                            public void OnItemClick(View view, ObjectDiem diem, int i) {
+                                view.setBackground(getDrawable(R.color.background2nd));
+                                Toast.makeText(nhapdiem_ct_ltc.this, "Item: " + arrDiemSV.get(i).getMaSV(), Toast.LENGTH_SHORT).show();
+                                maLTC_ct_ltc = nhapdiem.maLTC_NhapDiem;
+                                tenMH_ct_ltc = nhapdiem.tenMH_NhapDiem;
+                                maSV_ct_ltc = arrDiemSV.get(i).getMaSV();
+                                Intent intent = new Intent(nhapdiem_ct_ltc.this, cap_nhat_diem.class);
+                                startActivity(intent);
+
+                            }
+                        });
+                        rcvDSSV_LTC.setAdapter(diemAdapter);
+
+                    }
                 }
-                return false;
-            }
+                    return false;
+                }
         });
     }
 

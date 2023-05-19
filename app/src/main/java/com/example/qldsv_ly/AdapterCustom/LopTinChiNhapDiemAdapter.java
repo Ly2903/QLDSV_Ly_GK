@@ -1,4 +1,4 @@
-package com.example.adapter;
+package com.example.qldsv_ly.AdapterCustom;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,83 +7,73 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.example.Objects.ObjectLopTinChiNhapDiem;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.qldsv_ly.Objects.ObjectLopTinChiNhapDiem;
 import com.example.qldsv_ly.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
-public class LopTinChiNhapDiemAdapter extends BaseAdapter {
+public class LopTinChiNhapDiemAdapter extends RecyclerView.Adapter<LopTinChiNhapDiemAdapter.LTCNhapDiemViewHolder> {
 
-    private Context context;
-    private int layout;
-    private LayoutInflater layoutInflater;
-    ArrayList<ObjectLopTinChiNhapDiem> listLTC;
-    private ObjectLopTinChiNhapDiem objectLopTinChiNhapDiem;
 
-    public LopTinChiNhapDiemAdapter(Context context, ArrayList<ObjectLopTinChiNhapDiem> listLTC) {
-        this.context = context;
-        this.listLTC = listLTC;
-        layoutInflater= (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    private final List<ObjectLopTinChiNhapDiem> mlistLTC;
+
+    private final ItemClickListener mItemClick;
+
+
+    public LopTinChiNhapDiemAdapter(List<ObjectLopTinChiNhapDiem> mListLTC, ItemClickListener mItemClick) {
+        this.mlistLTC = mListLTC;
+        this.mItemClick = mItemClick;
     }
 
-    public LopTinChiNhapDiemAdapter(Context context, int layout, ArrayList<ObjectLopTinChiNhapDiem> listLTC) {
-        this.context = context;
-        this.layout=layout;
-        this.listLTC=listLTC;
+    @NonNull
+    @Override
+    public LTCNhapDiemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_loptinchi_nhapdiem, parent, false);
+
+        return new LTCNhapDiemViewHolder(view);
     }
 
     @Override
-    public int getCount() {
-        return listLTC.size();
-    }
-
-    @Override
-    public Object getItem(int i) {
-        return listLTC.get(i);
-    }
-
-
-    public long getItemId(int i) {
-        return listLTC.get(i).getId();
-    }
-
-
-    private class ViewHolder
-    {
-        TextView maLTC;
-        TextView tenMH;
-    }
-
-    @Override
-    public View getView(int i, View view, ViewGroup parent) {
-
-        ViewHolder viewHolder;
-        if (view==null)
-        {
-            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = inflater.inflate(layout,  null);
-
-            viewHolder = new ViewHolder();
-
-
-            // Ánh xạ view
-            viewHolder.maLTC = (TextView) view.findViewById(R.id.maLTC);
-            viewHolder.tenMH = (TextView) view.findViewById(R.id.tenMH);
-            view.setTag(viewHolder);
+    public void onBindViewHolder(@NonNull LTCNhapDiemViewHolder holder, int position) {
+        ObjectLopTinChiNhapDiem ltc = mlistLTC.get(position);
+        if (ltc == null) {
+            return;
         }
-        else
-        {
-            viewHolder = (ViewHolder) view.getTag();
+        holder.maLTC.setText(ltc.getMaLTC());
+        holder.tenMH.setText(ltc.getTenMH());
+
+        holder.itemView.setOnClickListener(view -> {
+            mItemClick.OnItemClick(view, ltc, position);
+
+        });
+    }
+
+
+
+    @Override
+    public int getItemCount() {
+        return mlistLTC.size();
+    }
+
+    public interface ItemClickListener {
+        void OnItemClick(View view, ObjectLopTinChiNhapDiem ltc, int i);
+
+    }
+
+    public static class LTCNhapDiemViewHolder extends RecyclerView.ViewHolder {
+
+        private final TextView maLTC, tenMH;
+
+
+        public LTCNhapDiemViewHolder(@NonNull View itemView) {
+            super(itemView);
+            maLTC = itemView.findViewById(R.id.maLTC);
+            tenMH = itemView.findViewById(R.id.tenMH);
         }
-
-        // Gán giá trị
-        objectLopTinChiNhapDiem =listLTC.get(i);
-        viewHolder.maLTC.setText(objectLopTinChiNhapDiem.getMaLTC());
-        viewHolder.tenMH.setText(objectLopTinChiNhapDiem.getTenMH());
-
-        // Đổi màu items
-        view.setBackgroundResource(R.drawable.textlines);
-        return view;
     }
 }

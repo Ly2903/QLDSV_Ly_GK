@@ -23,7 +23,7 @@
                 android:id="@+id/searchTaiKhoan"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:queryHint="Tìm kiếm sinh viên"
+                app:queryHint="Tìm kiếm môn học"
                 app:iconifiedByDefault="false"
                 android:background="@drawable/search"
                 android:layout_marginTop="5dp"
@@ -140,8 +140,8 @@
                     android:textStyle="bold"/>
             </LinearLayout>
 
-            <ListView
-                android:id="@+id/listviewDSLTC"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rcvListLTC"
                 android:drawSelectorOnTop="true"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

@@ -1,6 +1,7 @@
 package com.example.qldsv_ly;
 
 import android.animation.ObjectAnimator;
+import android.annotation.SuppressLint;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -20,33 +21,37 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.Objects.ObjectLopTinChiNhapDiem;
-import com.example.adapter.LopTinChiNhapDiemAdapter;
+import com.example.qldsv_ly.Objects.ObjectLopTinChiNhapDiem;
+import com.example.qldsv_ly.AdapterCustom.LopTinChiNhapDiemAdapter;
+import com.example.qldsv_ly.api.ApiManager;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class nhapdiem extends AppCompatActivity {
-
-    Connection connect;
-    String connectionResult="";
     Spinner cbNienKhoa, cbHocKy;
-    ArrayList<String> arrNienKhoa = new ArrayList<String>();
+    List<String> arrNienKhoa = new ArrayList<>();
     ArrayList<String> arrHocKy = new ArrayList<String>();
 
-    ListView listviewLTC;
+    RecyclerView rcv_LTC;
 
     Button btnClickback;
     SearchView searchLTC;
-    public static ArrayList<ObjectLopTinChiNhapDiem> arrLopTinChiNhapDiem;
-    ObjectLopTinChiNhapDiem objectLopTinChiNhapDiem;
-    LopTinChiNhapDiemAdapter lopTinChiNhapDiemAdapter;
-    int vitri=-1, vitriNienKhoa=0, vitriHocKy=0;
+    List<ObjectLopTinChiNhapDiem> arrLopTinChiNhapDiem = new ArrayList<>();
 
-    Context context;
+    String NienKhoa="All", HocKy="All";
+
 
     public String MaGiangVien="";
     public static String maLTC_NhapDiem="",tenMH_NhapDiem="";
@@ -58,10 +63,10 @@ public class nhapdiem extends AppCompatActivity {
 
         Intent intent = getIntent();
         MaGiangVien = intent.getStringExtra("maGiangVien");
-
+        System.out.println("magv"+ MaGiangVien);
         setControl();
         setEvent();
-        searchTaiKhoan();
+        searchMonHoc();
 
         ArrayAdapter arrayAdapterNienKhoa = new ArrayAdapter(this,android.R.layout.simple_spinner_item,arrNienKhoa);
         cbNienKhoa.setAdapter(arrayAdapterNienKhoa);
@@ -70,30 +75,15 @@ public class nhapdiem extends AppCompatActivity {
         cbHocKy.setAdapter(arrayAdapterHocKy);
         arrayAdapterHocKy.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        //lopTinChiDaDangKyAdapter = new LopTinChiDaDangKyAdapter(context,arrLopTinChiDaDangKy);
-        lopTinChiNhapDiemAdapter = new LopTinChiNhapDiemAdapter(this,R.layout.item_loptinchi_nhapdiem,arrLopTinChiNhapDiem);
-        listviewLTC.setAdapter(lopTinChiNhapDiemAdapter);
-        listviewLTC.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(nhapdiem.this, "Item: "+nhapdiem.arrLopTinChiNhapDiem.get(position).getMaLTC(), Toast.LENGTH_SHORT).show();
-                maLTC_NhapDiem = nhapdiem.arrLopTinChiNhapDiem.get(position).getMaLTC();
-                tenMH_NhapDiem=nhapdiem.arrLopTinChiNhapDiem.get(position).getTenMH();
-                Intent intent = new Intent(nhapdiem.this, nhapdiem_ct_ltc.class);
-                intent.putExtra("maGiangVien", MaGiangVien);
-                startActivity(intent);
-            }
-        });
 
 
         cbNienKhoa.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                vitriNienKhoa=i;
+                NienKhoa = arrNienKhoa.get(i);
+                System.out.println("aaaaa"+ arrNienKhoa.get(i));
                 getDSLTC();
-                lopTinChiNhapDiemAdapter.notifyDataSetChanged();
-//                searchView.setQuery("", false);
-//                searchView.clearFocus();
+
             }
 
             @Override
@@ -105,9 +95,9 @@ public class nhapdiem extends AppCompatActivity {
         cbHocKy.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                vitriHocKy=i;
+                HocKy= arrHocKy.get(i);
                 getDSLTC();
-                lopTinChiNhapDiemAdapter.notifyDataSetChanged();
+           //     lopTinChiNhapDiemAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -129,8 +119,15 @@ public class nhapdiem extends AppCompatActivity {
     private void setControl(){
         cbNienKhoa=(Spinner) findViewById(R.id.nien_khoa_spinner);
         cbHocKy=(Spinner) findViewById(R.id.hoc_ky_spinner);
-        listviewLTC = (ListView) findViewById(R.id.listviewDSLTC);
-        arrLopTinChiNhapDiem = new ArrayList<>();
+        rcv_LTC = (RecyclerView) findViewById(R.id.rcvListLTC);
+        rcv_LTC.setHasFixedSize(true);
+
+        LinearLayoutManager linearLayoutManager =  new LinearLayoutManager(this);
+        rcv_LTC.setLayoutManager(linearLayoutManager);
+
+        DividerItemDecoration itemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
+        rcv_LTC.addItemDecoration(itemDecoration);
+
         btnClickback = findViewById(R.id.btnClickback);
         searchLTC = findViewById(R.id.searchTaiKhoan);
     }
@@ -143,7 +140,7 @@ public class nhapdiem extends AppCompatActivity {
 
     }
 
-    public void searchTaiKhoan() {
+    public void searchMonHoc() {
         searchLTC.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -155,47 +152,59 @@ public class nhapdiem extends AppCompatActivity {
                 if (newText.isEmpty())
                 {
                     getDSLTC();
-                    lopTinChiNhapDiemAdapter.notifyDataSetChanged();
                 }
-                else
-                {
+                else {
+
                     cbHocKy.setSelection(0);
                     cbNienKhoa.setSelection(0);
-                    timKiemLTCNhapDiem(newText);
-                    lopTinChiNhapDiemAdapter.notifyDataSetChanged();
+                    List<ObjectLopTinChiNhapDiem> listLTCSearch = new ArrayList<>();
+                    for (int i = 0; i < arrLopTinChiNhapDiem.size(); i++) {
+                        if (arrLopTinChiNhapDiem.get(i).getTenMH().toLowerCase().contains(newText.toLowerCase()) || arrLopTinChiNhapDiem.get(i).getMaLTC().toLowerCase().contains(newText.toLowerCase())) {
+                            listLTCSearch.add(arrLopTinChiNhapDiem.get(i));
+
+                        }
+                    }
+                    LopTinChiNhapDiemAdapter ltcAdapter = new LopTinChiNhapDiemAdapter(listLTCSearch, new LopTinChiNhapDiemAdapter.ItemClickListener() {
+                        @Override
+                        public void OnItemClick(View view, ObjectLopTinChiNhapDiem ltc, int i) {
+                            view.setBackground(getDrawable(R.color.background2nd));
+                            Toast.makeText(nhapdiem.this, "Item: " + arrLopTinChiNhapDiem.get(i).getMaLTC(), Toast.LENGTH_SHORT).show();
+                            maLTC_NhapDiem =arrLopTinChiNhapDiem.get(i).getMaLTC();
+                            tenMH_NhapDiem=arrLopTinChiNhapDiem.get(i).getTenMH();
+                            Intent intent = new Intent(nhapdiem.this, nhapdiem_ct_ltc.class);
+                            intent.putExtra("maGiangVien", MaGiangVien);
+                            intent.putExtra("maLTC", arrLopTinChiNhapDiem.get(i).getMaLTC());
+                            startActivity(intent);
+
+                        }
+                    });
+                    rcv_LTC.setAdapter(ltcAdapter);
                 }
                 return false;
             }
         });
     }
     private void KhoiTaoNienKhoa(){
-        try
-        {
-            connectionHelper connectionHelper = new connectionHelper();
-            connect = connectionHelper.connectionClass();
-            if (connect != null) {
-                String query = "select distinct namhoc, cast(substring(NamHoc,0,5) as int)\n" +
-                        "from LopTinChi\n" +
-                        "group by namhoc\n" +
-                        "order by cast(substring(NamHoc,0,5) as int) DESC, NamHoc";
-                arrNienKhoa.clear();
-                arrNienKhoa.add("All");
-                Statement st = connect.createStatement();
-                ResultSet rs = st.executeQuery(query);
-                int i=0;
-                while(rs.next())
-                {
-                    arrNienKhoa.add(rs.getString(1));
+        arrNienKhoa.clear();
+        arrNienKhoa.add("All");
+        ApiManager apiManager = ApiManager.getInstance();
+        Call<List<String>> call = apiManager.getApiService().getDSNamHocTheoLTC();
+        call.enqueue(new Callback<List<String>>() {
+            @Override
+            public void onResponse(Call<List<String>> call, Response<List<String>> response) {
+                if(response.body()!= null && response.isSuccessful()){
+                    for(int i = 0 ; i < response.body().size() ; i++){
+                        arrNienKhoa.add(response.body().get(i));
+
+                    }
                 }
-                connect.close();
             }
-            else{
-                connectionResult="Check Connection";
+
+            @Override
+            public void onFailure(Call<List<String>> call, Throwable t) {
+                Toast.makeText(nhapdiem.this, "call api fail", Toast.LENGTH_SHORT).show();
             }
-        }
-        catch (Exception e){
-            Log.e("",e.getMessage());
-        }
+        });
     }
     private void KhoiTaoHocKi(){
         arrHocKy.add("All");
@@ -204,83 +213,40 @@ public class nhapdiem extends AppCompatActivity {
     }
 
     private void getDSLTC() {
-    try {
-        connectionHelper connectionHelper = new connectionHelper();
-        connect = connectionHelper.connectionClass();
 
-        if(connect !=null){
-            String query = "select ltc.MaLTC, mh.TenMH from LopTinChi ltc\n" +
-                    "join MonHoc MH on ltc.MaMH = MH.MaMH\n" +
-                    "join day on ltc.MaLTC = day.MaLTC\n" +
-                    "join GiangVien gv on gv.MaGV = day.MaGV\n" +
-                    "where gv.magv = '"+MaGiangVien+"' ";
+        arrLopTinChiNhapDiem.clear();
+        ApiManager apiManager = ApiManager.getInstance();
+        Call<List<ObjectLopTinChiNhapDiem>> call = apiManager.getApiService().getDSLTCTheoMaGV(MaGiangVien, NienKhoa, HocKy);        call.enqueue(new Callback<List<ObjectLopTinChiNhapDiem>>() {
+            @Override
+            public void onResponse(Call<List<ObjectLopTinChiNhapDiem>> call, Response<List<ObjectLopTinChiNhapDiem>> response) {
+                if(response.body()!= null && response.isSuccessful()){
+                    arrLopTinChiNhapDiem = response.body();
+                    LopTinChiNhapDiemAdapter ltcAdapter = new LopTinChiNhapDiemAdapter(arrLopTinChiNhapDiem, new LopTinChiNhapDiemAdapter.ItemClickListener() {
+                        @Override
+                        public void OnItemClick(View view, ObjectLopTinChiNhapDiem ltc, int i) {
+                            view.setBackground(getDrawable(R.color.background2nd));
+                            Toast.makeText(nhapdiem.this, "Item: " + arrLopTinChiNhapDiem.get(i).getMaLTC(), Toast.LENGTH_SHORT).show();
+                            maLTC_NhapDiem =arrLopTinChiNhapDiem.get(i).getMaLTC();
+                            tenMH_NhapDiem=arrLopTinChiNhapDiem.get(i).getTenMH();
+                            Intent intent = new Intent(nhapdiem.this, nhapdiem_ct_ltc.class);
+                            intent.putExtra("maGiangVien", MaGiangVien);
+                            intent.putExtra("maLTC", arrLopTinChiNhapDiem.get(i).getMaLTC());
+                            startActivity(intent);
 
-            if (arrNienKhoa.get(vitriNienKhoa).equals("All") && arrHocKy.get(vitriHocKy).equals("All"))
-                query = query + " order by cast(substring(ltc.MaLTC,4,10) as int)";
-            else if (arrNienKhoa.get(vitriNienKhoa).equals("All") && !arrHocKy.get(vitriHocKy).equals("All"))
-                query = query+ " and hocki='"+arrHocKy.get(vitriHocKy)+"' order by cast(substring(ltc.MaLTC,4,10) as int)";
-            else if (!arrNienKhoa.get(vitriNienKhoa).equals("All") && arrHocKy.get(vitriHocKy).equals("All"))
-                query = query+ " and namhoc='"+arrNienKhoa.get(vitriNienKhoa)+"' order by cast(substring(ltc.MaLTC,4,10) as int)";
-            else
-                query = query + " and hocki='"+arrHocKy.get(vitriHocKy)+"' and namhoc='"+arrNienKhoa.get(vitriNienKhoa)+"' order by cast(substring(ltc.MaLTC,4,10) as int)";
+                        }
+                    });
+                    rcv_LTC.setAdapter(ltcAdapter);
 
-            arrLopTinChiNhapDiem.clear();
-            Statement st = connect.createStatement();
-            ResultSet rs = st.executeQuery(query);
-            int i=0;
-            while(rs.next())
-            {
-                objectLopTinChiNhapDiem = new ObjectLopTinChiNhapDiem();
-                objectLopTinChiNhapDiem.setId(i);
-                objectLopTinChiNhapDiem.setMaLTC(rs.getString(1));
-                objectLopTinChiNhapDiem.setTenMH(rs.getString(2));
-                arrLopTinChiNhapDiem.add(objectLopTinChiNhapDiem);
-            }
-            connect.close();
-        }
-        else{
-            connectionResult="Check Connection";
-        }
-    }
-    catch (Exception e){
-        Log.e("",e.getMessage());
-    }
-    }
-
-    public void timKiemLTCNhapDiem(String kitu){
-        try {
-            connectionHelper connectionHelper = new connectionHelper();
-            connect = connectionHelper.connectionClass();
-            String query = "select ltc.MaLTC, mh.TenMH from LopTinChi ltc\n" +
-                    "join MonHoc MH on ltc.MaMH = MH.MaMH\n" +
-                    "join day on ltc.MaLTC = day.MaLTC\n" +
-                    "join GiangVien gv on gv.MaGV = day.MaGV\n" +
-                    "where gv.magv = '"+MaGiangVien+"' ";
-            if (connect != null) {
-                query = query + " and (ltc.maltc like N'%"+kitu+"%' or mh.TenMH like N'%"+kitu+"%')";
-                arrLopTinChiNhapDiem.clear();
-                Statement st = connect.createStatement();
-                ResultSet rs = st.executeQuery(query);
-                int i=0;
-                while(rs.next())
-                {
-                    objectLopTinChiNhapDiem = new ObjectLopTinChiNhapDiem();
-                    objectLopTinChiNhapDiem.setId(i);
-                    objectLopTinChiNhapDiem.setMaLTC(rs.getString(1));
-                    objectLopTinChiNhapDiem.setTenMH(rs.getString(2));
-
-                    arrLopTinChiNhapDiem.add(objectLopTinChiNhapDiem);
                 }
-                connect.close();
-            }
-            else{
-                connectionResult="Check Connection";
             }
 
-        }
-        catch (Exception e){
-            Log.e("",e.getMessage());
-        }
+            @Override
+            public void onFailure(Call<List<ObjectLopTinChiNhapDiem>> call, Throwable t) {
+                Toast.makeText(nhapdiem.this, "call api fail", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
+
+
 }
 

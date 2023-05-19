@@ -1,44 +1,34 @@
-package com.example.Objects;
+package com.example.qldsv_ly.Objects;
 
 
 public class ObjectLopTinChiNhapDiem {
-    private int id;
-    private String maLTC;
-    private String tenMH;
+
+    private String MaLTC;
+    private String TenMH;
 
 
 
     public ObjectLopTinChiNhapDiem(){
     }
 
-
-    public ObjectLopTinChiNhapDiem(int id, String maLTC, String tenMH) {
-        this.id = id;
-        this.maLTC = maLTC;
-        this.tenMH = tenMH;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
+    public ObjectLopTinChiNhapDiem(String maLTC, String tenMH) {
+        this.MaLTC = maLTC;
+        this.TenMH = tenMH;
     }
 
     public String getMaLTC() {
-        return maLTC;
+        return MaLTC;
     }
 
     public void setMaLTC(String maLTC) {
-        this.maLTC = maLTC;
+        this.MaLTC = maLTC;
     }
 
     public String getTenMH() {
-        return tenMH;
+        return TenMH;
     }
 
     public void setTenMH(String tenMH) {
-        this.tenMH = tenMH;
+        this.TenMH = tenMH;
     }
 }
